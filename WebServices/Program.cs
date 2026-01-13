@@ -13,6 +13,15 @@ namespace WebServices
     }
     #endregion
 
+    #region Jokes
+    public class RandomJokes
+    {
+        public string type { get; set; }
+        public string setup { get; set; }
+        public string punchline { get; set; }
+    }
+    #endregion
+
     internal class Program
     {
         static async Task Main()
@@ -26,18 +35,18 @@ namespace WebServices
 
             try
             {
-                Console.WriteLine("JSON Response: \n_____________________________________________________________________________________________");
+                Console.WriteLine("JSON Response: \n_________________________________________________________________________________________________________________");
                 Console.WriteLine(response);
 
                 AnimeQuote result = JsonSerializer.Deserialize<AnimeQuote>(response);
-                Console.WriteLine("_____________________________________________________________________________________________\n");
+                Console.WriteLine("_________________________________________________________________________________________________________________________\n");
 
                 Console.WriteLine("After Deserialization:");
-                Console.WriteLine("_____________________________________________________________________________________________");
+                Console.WriteLine("_________________________________________________________________________________________________________________________");
                 Console.WriteLine(value: $"Anime Character Name: {result.data.character.name}");
                 Console.WriteLine(value: $"Anime Name: {result.data.anime.name}");
                 Console.WriteLine(value: $"Quote: {result.data.content}");
-                Console.WriteLine("_____________________________________________________________________________________________\n\n\n");
+                Console.WriteLine("_________________________________________________________________________________________________________________________\n\n\n");
             }
             catch (Exception ex)
             {
@@ -54,10 +63,25 @@ namespace WebServices
 
             CatFacts myFact = JsonSerializer.Deserialize<CatFacts>(responseCat);
 
-            Console.WriteLine("_________________________________________ CAT FACT OF THE DAY _______________________________");
+            Console.WriteLine("_____________________________________________________ CAT FACT OF THE DAY _______________________________________________");
             Console.WriteLine(myFact.fact);
             Console.WriteLine($"Length of Fact: {myFact.length} characters");
-            Console.WriteLine("_____________________________________________________________________________________________\n\n\n");
+            Console.WriteLine("_________________________________________________________________________________________________________________________\n\n\n");
+            #endregion
+
+            #region Joke Example
+            using HttpClient clientJoke = new HttpClient();
+
+            Console.WriteLine("Randomized Joke:");
+            string responseJoke = await clientJoke.GetStringAsync("https://official-joke-api.appspot.com/random_joke");
+
+            RandomJokes myJoke = JsonSerializer.Deserialize<RandomJokes>(responseJoke);
+
+            Console.WriteLine("__________________________________________________________ JOKE OF THE DAY _______________________________________________");
+            Console.WriteLine($"Joke Type: {myJoke.type}");
+            Console.WriteLine($"Joke: {myJoke.setup}");
+            Console.WriteLine($"Punchline: ${myJoke.punchline}");
+            Console.WriteLine("__________________________________________________________________________________________________________________________\n\n\n");
             #endregion
 
             #region Product Example
@@ -84,7 +108,32 @@ namespace WebServices
                 Console.WriteLine($"Error: {ex.Message}");
             }
             #endregion
+
+            #region Async Tasks Example
+            Task<string> toastTask = MakeToastAsync();
+            Task<string> coffeeTask = MakeCoffeeAsync();
+
+            string toast = await toastTask;
+            string coffee = await coffeeTask;
+
+            Console.WriteLine(toast);
+            Console.WriteLine(coffee);
+
+            #endregion
         }
+        #region Async Methods
+        static async Task<string> MakeToastAsync()
+        {
+            await Task.Delay(3000); // Simulate a delay for making toast
+            return "Toast is ready!";
+
+        }
+        static async Task<string> MakeCoffeeAsync()
+        {
+            await Task.Delay(2000); // Simulate a delay for making coffee
+            return "Coffee is ready!";
+        }
+        #endregion
     }
 
     #region Anime Quote Classes
@@ -125,4 +174,5 @@ namespace WebServices
         public string category { get; set; }
     }
     #endregion
+
 }
