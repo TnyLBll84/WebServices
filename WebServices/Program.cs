@@ -26,6 +26,7 @@ namespace WebServices
     {
         static async Task Main()
         {
+
             #region Anime Quote Example
             using HttpClient client = new HttpClient();
 
@@ -35,18 +36,18 @@ namespace WebServices
 
             try
             {
-                Console.WriteLine("JSON Response: \n_________________________________________________________________________________________________________________");
+                Console.WriteLine("JSON Response: \n________________________________________________________________________________________________________________________");
                 Console.WriteLine(response);
 
                 AnimeQuote result = JsonSerializer.Deserialize<AnimeQuote>(response);
-                Console.WriteLine("_________________________________________________________________________________________________________________________\n");
+                Console.WriteLine("________________________________________________________________________________________________________________________\n");
 
                 Console.WriteLine("After Deserialization:");
-                Console.WriteLine("_________________________________________________________________________________________________________________________");
+                Console.WriteLine("________________________________________________________________________________________________________________________");
                 Console.WriteLine(value: $"Anime Character Name: {result.data.character.name}");
                 Console.WriteLine(value: $"Anime Name: {result.data.anime.name}");
                 Console.WriteLine(value: $"Quote: {result.data.content}");
-                Console.WriteLine("_________________________________________________________________________________________________________________________\n\n\n");
+                Console.WriteLine("________________________________________________________________________________________________________________________\n\n\n");
             }
             catch (Exception ex)
             {
@@ -63,10 +64,10 @@ namespace WebServices
 
             CatFacts myFact = JsonSerializer.Deserialize<CatFacts>(responseCat);
 
-            Console.WriteLine("_____________________________________________________ CAT FACT OF THE DAY _______________________________________________");
+            Console.WriteLine("_____________________________________________________ CAT FACT OF THE DAY ______________________________________________");
             Console.WriteLine(myFact.fact);
             Console.WriteLine($"Length of Fact: {myFact.length} characters");
-            Console.WriteLine("_________________________________________________________________________________________________________________________\n\n\n");
+            Console.WriteLine("________________________________________________________________________________________________________________________\n\n\n");
             #endregion
 
             #region Joke Example
@@ -77,16 +78,16 @@ namespace WebServices
 
             RandomJokes myJoke = JsonSerializer.Deserialize<RandomJokes>(responseJoke);
 
-            Console.WriteLine("__________________________________________________________ JOKE OF THE DAY _______________________________________________");
+            Console.WriteLine("_________________________________________________________ JOKE OF THE DAY ______________________________________________");
             Console.WriteLine($"Joke Type: {myJoke.type}");
             Console.WriteLine($"Joke: {myJoke.setup}");
-            Console.WriteLine($"Punchline: ${myJoke.punchline}");
-            Console.WriteLine("__________________________________________________________________________________________________________________________\n\n\n");
+            Console.WriteLine($"Punchline: 2{myJoke.punchline}");
+            Console.WriteLine("________________________________________________________________________________________________________________________\n\n\n");
             #endregion
 
             #region Product Example
             using HttpClient clientProduct = new HttpClient();
-            Console.WriteLine("Choose product from 1-20: ");
+            Console.Write("Choose product from 1-20: ");
             string id = Console.ReadLine();
             var urlProduct = "https://fakestoreapi.com/products/" + id;
             try
@@ -94,13 +95,13 @@ namespace WebServices
                 // Test API reachability
                 string responseProduct = await clientProduct.GetStringAsync(urlProduct);
                 Product product = JsonSerializer.Deserialize<Product>(responseProduct);
-                Console.WriteLine("_________________________________________ PRODUCT DETAILS __________________________________");
+                Console.WriteLine("_____________________________________________________ PRODUCT DETAILS ______________________________________________");
                 Console.WriteLine($"Product ID: {product.id}");
                 Console.WriteLine($"Title: {product.title}");
                 Console.WriteLine($"Price: ${product.price}");
                 Console.WriteLine($"Description: {product.description}");
                 Console.WriteLine($"Category: {product.category}");
-                Console.WriteLine("_____________________________________________________________________________________________\n\n\n");
+                Console.WriteLine("____________________________________________________________________________________________________________________\n\n\n");
 
             }
             catch (Exception ex) {
@@ -120,7 +121,73 @@ namespace WebServices
             Console.WriteLine(coffee);
 
             #endregion
+
+            #region Simulate Download Example
+            static async Task simulateDownload()
+            {
+                Console.WriteLine("\n\n\nStarting file download...\n");
+                System.Threading.Thread.Sleep(5000); // Simulate a 5-second download
+
+                Console.WriteLine("File download completed!");
+                
+            }
+            #endregion
+
+            #region Sequential vs Multitasking Example
+            Console.WriteLine("Choose 1 for Sequential Way or 2 for Multitasking Way:");
+            var choice = Console.ReadKey(true).KeyChar;
+            if (choice == '1')
+            {
+                Console.WriteLine("Running Sequentially ... ");
+                await SequentialWay();
+            }
+            else if (choice == '2')
+            {
+                Console.WriteLine("Running Multitasking ... ");
+                await MultitaskingWay();
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice. Please select 1 or 2.");
+            }
+
+            #region Sequential Way
+
+            static async Task SequentialWay()
+            {
+                simulateDownload();
+                showTime(5);
+            }
+
+            #endregion
+
+            #region Mulittasking Way
+
+            static async Task MultitaskingWay()
+            {
+                Task downloadTask = Task.Run(() => simulateDownload());
+                await showTime(5);
+                await downloadTask;
+
+            }
+
+            #endregion
+            #endregion
+
+            #region Show Time Example
+            static async Task showTime(int seconds)
+            {
+                for (int i = 0; i < seconds; i++)
+                {
+                    Console.WriteLine($"Time elapsed: {i + 1} seconds");
+                    await Task.Delay(1000); // Wait for 1 second
+                }
+            }
+            #endregion
+
+
         }
+
         #region Async Methods
         static async Task<string> MakeToastAsync()
         {
@@ -134,6 +201,7 @@ namespace WebServices
             return "Coffee is ready!";
         }
         #endregion
+
     }
 
     #region Anime Quote Classes
